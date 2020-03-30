@@ -4,7 +4,7 @@ const gravatar = require('gravatar');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { check, validationResult } = require('express-validator');
-const { errorsObject } = require('../logic');
+const { errorsObject } = require('../../logic/logic');
 const config = require('config');
 
 const User = require('../../models/User');
@@ -22,7 +22,7 @@ router.post(
     check(
       'password',
       'please enter a password with 8 or more characters'
-    ).isLength({ min: 6 })
+    ).isLength({ min: 8 })
   ],
   async (req, res) => {
     const errors = validationResult(req);
