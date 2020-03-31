@@ -15,9 +15,7 @@ const User = require('../../models/User');
 router.post(
   '/',
   [
-    check('name', 'Name is required')
-      .not()
-      .isEmpty(),
+    check('name', 'Name is required').notEmpty(),
     check('email', 'Email is not a valid one').isEmail(),
     check(
       'password',
@@ -69,7 +67,7 @@ router.post(
       jwt.sign(
         payload,
         config.get('jwtToken'),
-        { expiresIn: 36000 },
+        { expiresIn: 3600000 },
         (err, token) => {
           if (err) throw err;
           res.json({ token });
