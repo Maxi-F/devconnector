@@ -4,7 +4,7 @@ const gravatar = require('gravatar');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { check, validationResult } = require('express-validator');
-const { errorsObject } = require('../../logic/logic');
+const { errorsObject, tryOrServerError } = require('../../logic/logic');
 const config = require('config');
 
 const User = require('../../models/User');
@@ -24,7 +24,7 @@ router.post(
       'please enter a password with 8 or more characters'
     ).isLength({ min: 8 })
   ],
-  async (req, res) => {
+  (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
@@ -32,7 +32,7 @@ router.post(
 
     const { name, email, password } = req.body;
 
-    try {
+    tryOrServerError(res, async () => {
       // See if the user exists
       let user = await User.findOne({ email });
       if (user) {
@@ -75,10 +75,7 @@ router.post(
           res.json({ token });
         }
       );
-    } catch (error) {
-      console.error(err.message);
-      res.status(500).send('Server error');
-    }
+    });
   }
 );
 

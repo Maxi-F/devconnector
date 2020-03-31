@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { errorsObject } = require('../../logic/logic');
+const { errorsObject, tryOrServerError } = require('../../logic/logic');
 const { check, validationResult } = require('express-validator');
 const config = require('config');
 
@@ -12,14 +12,11 @@ const User = require('../../models/User');
 // @route   GET api/auth
 // @desc    Test route
 // @access  Public
-router.get('/', [authUser], async (req, res) => {
-  try {
+router.get('/', [authUser], (req, res) => {
+  tryOrServerError(res, async () => {
     const user = await User.findById(req.user.id).select('-password');
     res.json(user);
-  } catch (error) {
-    console.error(err.message);
-    res.status(500).send('Server Error');
-  }
+  });
 });
 
 // @route   POST api/users
@@ -31,7 +28,7 @@ router.post(
     check('email', 'Email is not a valid one').isEmail(),
     check('password', 'please enter a password').exists()
   ],
-  async (req, res) => {
+  (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
@@ -39,7 +36,7 @@ router.post(
 
     const { email, password } = req.body;
 
-    try {
+    tryOrServerError(res, async () => {
       // See if the user exists
       let user = await User.findOne({ email });
       if (!user)
@@ -66,10 +63,7 @@ router.post(
           res.json({ token });
         }
       );
-    } catch (error) {
-      console.error(error.message);
-      res.status(500).send('Server error');
-    }
+    });
   }
 );
 
