@@ -9,6 +9,10 @@ const errorsObject = (msg, param, location) => {
     ]
   };
 };
+const errorMessagesFromValidation = errors =>
+  Object.values(errors.errors).map(error => {
+    return errorsObject(error.message);
+  });
 
 const tryOrServerError = (res, func) => {
   try {
@@ -19,4 +23,8 @@ const tryOrServerError = (res, func) => {
   }
 };
 
-module.exports = { errorsObject, tryOrServerError };
+module.exports = {
+  errorsObject,
+  tryOrServerError,
+  errorMessagesFromValidation
+};
