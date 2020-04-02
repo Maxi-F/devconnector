@@ -11,8 +11,8 @@ const {
   errorMessagesFromValidation
 } = require('../../../logic/logic');
 const {
-  addValueToListInProfile,
-  deleteValueFromListInProfile
+  addRoutePutFor,
+  addRouteDeleteFor
 } = require('./listPropertiesHandlers');
 const authUser = require('../../../middleware/auth');
 
@@ -109,22 +109,22 @@ router.delete('/', authUser, (req, res) => {
 // @route   PUT api/profile/experience
 // @desc    add profile experience to user
 // @access  Private
-addValueToListInProfile(router, 'experience');
+addRoutePutFor(router, 'experience');
 
 // @route   DELETE api/profile/experience/:exp_id
 // @desc    Delete experience from profile
 // @access  Private
-deleteValueFromListInProfile(router, 'experience');
+addRouteDeleteFor(router, 'experience');
 
 // @route   PUT api/profile/education
 // @desc    add profile education to user
 // @access  Private
-addValueToListInProfile(router, 'education');
+addRoutePutFor(router, 'education');
 
 // @route   DELETE api/profile/education/:edu_id
 // @desc    Delete education from profile
 // @access  Private
-deleteValueFromListInProfile(router, 'education');
+addRouteDeleteFor(router, 'education');
 
 // @route   GET api/profile/github/:username
 // @desc    Get user repos from Github

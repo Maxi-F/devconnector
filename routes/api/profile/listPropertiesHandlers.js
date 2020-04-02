@@ -6,8 +6,7 @@ const {
   errorMessagesFromValidation
 } = require('../../../logic/logic');
 
-const addValueToListInProfile = (router, key) => {
-  console.log(`/${key}`);
+const addRoutePutFor = (router, key) => {
   router.put(`/${key}`, [authUser], (req, res) => {
     // see if there is a better way 4 this
     const newValue = {};
@@ -33,7 +32,7 @@ const addValueToListInProfile = (router, key) => {
   });
 };
 
-const deleteValueFromListInProfile = (router, key) => {
+const addRouteDeleteFor = (router, key) => {
   router.delete(`/${key}/:${key}_id`, authUser, (req, res) => {
     tryOrServerError(res, async () => {
       const profile = await Profile.findOne({ user: req.user.id });
@@ -48,4 +47,4 @@ const deleteValueFromListInProfile = (router, key) => {
   });
 };
 
-module.exports = { addValueToListInProfile, deleteValueFromListInProfile };
+module.exports = { addRoutePutFor, addRouteDeleteFor };
