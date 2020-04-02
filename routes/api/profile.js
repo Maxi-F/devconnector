@@ -111,41 +111,40 @@ router.delete('/', authUser, (req, res) => {
 // @route   PUT api/profile/experience
 // @desc    add profile experience to user
 // @access  Private
-router.put(
-  '/experience',
-  [
-    authUser,
-    check('title', 'Title is required').notEmpty(),
-    check('company', 'Company is required').notEmpty(),
-    check('from', 'From is required').notEmpty(),
-    check('location', 'Location is required').notEmpty()
-  ],
-  (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
+router.put('/experience', [authUser], (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
 
-    // see if there is a better way 4 this
-    const newExperience = {};
-    const experienceValidKeys = Object.keys(
-      Profile.schema.paths.experience.schema.paths
-    ).slice(0, -1);
-    experienceValidKeys.forEach(key => {
-      if (req.body[key]) newExperience[key] = req.body[key];
-    });
-    tryOrServerError(res, async () => {
-      const profile = await Profile.findOne({ user: req.user.id });
-      if (!profile)
-        return res.status(400).json(errorsObject('You must create a profile'));
+  // see if there is a better way 4 this
+  const newExperience = {};
+  const experienceValidKeys = Object.keys(
+    Profile.schema.paths.experience.schema.paths
+  ).slice(0, -1);
+  experienceValidKeys.forEach(key => {
+    if (req.body[key]) newExperience[key] = req.body[key];
+  });
+  tryOrServerError(res, async () => {
+    const profile = await Profile.findOne({ user: req.user.id });
+    if (!profile)
+      return res.status(400).json(errorsObject('You must create a profile'));
 
-      profile.experience.unshift(newExperience);
+    profile.experience.unshift(newExperience);
 
-      await profile.save();
+    await profile.save(errors => {
+      if (errors)
+        return res.status(400).json({
+          errors: Object.values(errors.errors).map(error => {
+            return {
+              msg: error.message
+            };
+          })
+        });
       res.json(profile);
     });
-  }
-);
+  });
+});
 
 // @route   DELETE api/profile/experience/:exp_id
 // @desc    Delete experience from profile
@@ -168,41 +167,40 @@ router.delete('/experience/:exp_id', authUser, (req, res) => {
 // @route   PUT api/profile/education
 // @desc    add profile education to user
 // @access  Private
-router.put(
-  '/education',
-  [
-    authUser,
-    check('school', 'School is required').notEmpty(),
-    check('degree', 'Degree is required').notEmpty(),
-    check('fieldOfStudy', 'Field of study is required').notEmpty(),
-    check('from', 'From is required').notEmpty()
-  ],
-  (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
+router.put('/education', [authUser], (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
 
-    // see if there is a better way 4 this
-    const newEducation = {};
-    const educationValidKeys = Object.keys(
-      Profile.schema.paths.education.schema.paths
-    ).slice(0, -1);
-    educationValidKeys.forEach(key => {
-      if (req.body[key]) newEducation[key] = req.body[key];
-    });
-    tryOrServerError(res, async () => {
-      const profile = await Profile.findOne({ user: req.user.id });
-      if (!profile)
-        return res.status(400).json(errorsObject('You must create a profile'));
+  // see if there is a better way 4 this
+  const newEducation = {};
+  const educationValidKeys = Object.keys(
+    Profile.schema.paths.education.schema.paths
+  ).slice(0, -1);
+  educationValidKeys.forEach(key => {
+    if (req.body[key]) newEducation[key] = req.body[key];
+  });
+  tryOrServerError(res, async () => {
+    const profile = await Profile.findOne({ user: req.user.id });
+    if (!profile)
+      return res.status(400).json(errorsObject('You must create a profile'));
 
-      profile.education.unshift(newEducation);
+    profile.education.unshift(newEducation);
 
-      await profile.save();
+    await profile.save(errors => {
+      if (errors)
+        return res.status(400).json({
+          errors: Object.values(errors.errors).map(error => {
+            return {
+              msg: error.message
+            };
+          })
+        });
       res.json(profile);
     });
-  }
-);
+  });
+});
 
 // @route   DELETE api/profile/education/:edu_id
 // @desc    Delete education from profile
