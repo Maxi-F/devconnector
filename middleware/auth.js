@@ -10,7 +10,7 @@ const authUser = (req, res, next) => {
     return res.status(401).json(errorsObject('No token, auth denied'));
 
   try {
-    const decoded = jwt.verify(token, config.get('jwtToken'));
+    const decoded = jwt.verify(token, process.env.JWT_TOKEN);
 
     req.user = decoded.user;
     next();

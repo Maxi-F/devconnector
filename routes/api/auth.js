@@ -38,13 +38,13 @@ router.post('/', (req, res) => {
     // Return jsonwebtoken (So the user is logged in)
     const payload = {
       user: {
-        id: user.id
-      }
+        id: user.id,
+      },
     };
 
     jwt.sign(
       payload,
-      config.get('jwtToken'),
+      process.env.JWT_TOKEN,
       { expiresIn: 36000 },
       (err, token) => {
         if (err) throw err;

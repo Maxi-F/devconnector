@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const config = require('config');
 const db = process.env.DB_URL || 'mongodb://localhost:27017/example';
 
 const connectDB = async () => {
@@ -8,7 +7,7 @@ const connectDB = async () => {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       useCreateIndex: true,
-      useFindAndModify: false
+      useFindAndModify: false,
     });
     console.log('MongoDB Connected');
   } catch (error) {

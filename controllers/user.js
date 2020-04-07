@@ -1,0 +1,43 @@
+const { errorsObject } = require('../logic/logic');
+const gravatar = require('gravatar');
+const bcrypt = require('bcryptjs');
+
+const User = require('../models/User');
+
+const registerUser = async (userObject) => {
+  // See if the user exists
+  let user = await User.findOne({ email: userObject.email });
+
+  if (user) {
+    return errorsObject('User already in DB');
+  }
+
+  // Get users gravatar (avatar from users email)
+  const avatar = gravatar.url(userObject.email, {
+    s: '200', // size
+    r: 'pg',
+    d: 'mm', // default user icon
+  });
+
+  user = new User({
+    name: userObject.name,
+    email: userObject.email,
+    avatar,
+    password: userObject.password,
+  });
+
+  try {
+    await user.validate();
+  } catch (errors) {
+    return errorMessagesFromValidation(errors);
+  }
+  // Encrypt password
+  const salt = await bcrypt.genSalt(10);
+  user.password = await bcrypt.hash(userObject.password, salt);
+
+  await user.save();
+
+  return user;
+};
+
+module.exports = { registerUser };
