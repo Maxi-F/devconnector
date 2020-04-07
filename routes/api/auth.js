@@ -1,11 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { errorsObject, tryOrServerError } = require('../../logic/logic');
+const { tryOrServerError } = require('../../logic/logic');
 
-const config = require('config');
-
+const { logInUser } = require('../../controllers/user');
 const authUser = require('../../middleware/auth');
 const User = require('../../models/User');
 
@@ -20,21 +18,17 @@ router.get('/', [authUser], (req, res) => {
 });
 
 // @route   POST api/users
-// @desc    Register user
+// @desc    log in user
 // @access  Public
 router.post('/', (req, res) => {
   const { email, password } = req.body;
 
   tryOrServerError(res, async () => {
-    // See if the user exists
-    let user = await User.findOne({ email });
-    if (!user) return res.status(400).json(errorsObject('Invalid Credentials'));
+    const user = await logInUser({ email, password });
 
-    const isAMatch = await bcrypt.compare(password, user.password);
-
-    if (!isAMatch)
-      return res.status(400).json(errorsObject('Invalid Credentials'));
-
+    if (user.errors) {
+      res.json(user);
+    }
     // Return jsonwebtoken (So the user is logged in)
     const payload = {
       user: {

@@ -4,19 +4,19 @@ const errorsObject = (msg, param, location) => {
       {
         msg,
         param,
-        location
-      }
-    ]
+        location,
+      },
+    ],
   };
 };
-const errorMessagesFromValidation = errors =>
-  Object.values(errors.errors).map(error => {
+const errorMessagesFromValidation = (errors) =>
+  Object.values(errors.errors).map((error) => {
     return errorsObject(error.message);
   });
 
-const tryOrServerError = (res, func) => {
+const tryOrServerError = async (res, func) => {
   try {
-    func();
+    await func();
   } catch (error) {
     res.status(500).send('server error');
     console.log(error.message);
@@ -26,5 +26,5 @@ const tryOrServerError = (res, func) => {
 module.exports = {
   errorsObject,
   tryOrServerError,
-  errorMessagesFromValidation
+  errorMessagesFromValidation,
 };

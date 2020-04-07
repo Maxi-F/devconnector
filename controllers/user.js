@@ -40,4 +40,16 @@ const registerUser = async (userObject) => {
   return user;
 };
 
-module.exports = { registerUser };
+const logInUser = async (user) => {
+  // See if the user exists
+  const userInDB = await User.findOne({ email: user.email });
+  if (!userInDB) return errorsObject('Invalid Credentials');
+
+  const isAMatch = await bcrypt.compare(user.password, userInDB.password);
+
+  if (!userInDB || !isAMatch) return errorsObject('Invalid Credentials');
+
+  return userInDB;
+};
+
+module.exports = { registerUser, logInUser };
