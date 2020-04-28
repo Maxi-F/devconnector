@@ -1,8 +1,11 @@
 const { registerUser, logInUser } = require('../../controllers/user');
 const mongoose = require('mongoose');
 const User = require('../../models/User');
+const { setupDB } = require('../setupDB');
 
 describe('User Controllers', () => {
+  setupDB();
+
   let mockedUser = {
     name: 'John Doe',
     email: 'johnDoe@gmail.com',
@@ -15,22 +18,6 @@ describe('User Controllers', () => {
     email: 'johnDoe@gmail.com',
     password: '12345678',
   };
-
-  beforeAll(async () => {
-    await mongoose.connect(process.env.MONGO_URL, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-  });
-
-  afterEach(async () => {
-    await User.deleteMany();
-  });
-
-  afterAll(async () => {
-    await mongoose.connection.collections['users'].drop();
-    await mongoose.connection.close();
-  });
 
   it('registers an OK user', async () => {
     let savedUser = await registerUser(mockedUser);
