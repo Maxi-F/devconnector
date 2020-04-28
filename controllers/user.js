@@ -1,4 +1,4 @@
-const { errorsObject } = require('../logic/logic');
+const { errorsObject, errorMessagesFromValidation } = require('../logic/logic');
 const gravatar = require('gravatar');
 const bcrypt = require('bcryptjs');
 

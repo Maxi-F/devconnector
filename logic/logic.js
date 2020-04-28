@@ -9,10 +9,14 @@ const errorsObject = (msg, param, location) => {
     ],
   };
 };
-const errorMessagesFromValidation = (errors) =>
-  Object.values(errors.errors).map((error) => {
-    return errorsObject(error.message);
+const errorMessagesFromValidation = (validation) => {
+  let errors = Object.values(validation.errors).map((error) => {
+    return { msg: error.message };
   });
+  return {
+    errors,
+  };
+};
 
 const tryOrServerError = async (res, func) => {
   try {
