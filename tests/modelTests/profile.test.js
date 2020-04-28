@@ -1,4 +1,5 @@
 const Profile = require('../../models/Profile');
+const validateModelAndExpect = require('./utils');
 
 describe('Profile Model validation', () => {
   let mockedProfile = {
@@ -13,18 +14,6 @@ describe('Profile Model validation', () => {
     skills: ['HTML', 'CSS', 'PHP', 'something about banco', 'JS'],
     status: 'Pasante Seg Info',
     website: 'https://google.com',
-  };
-
-  const validateAndExpect = async (expectFunc) => {
-    const profile = new Profile(mockedProfile);
-    let message = false;
-
-    try {
-      await profile.validate();
-    } catch (error) {
-      message = error.message;
-    }
-    expectFunc(message);
   };
 
   afterEach(() => {
@@ -44,14 +33,18 @@ describe('Profile Model validation', () => {
   });
 
   it('validates an OK profile', async () => {
-    await validateAndExpect((errorMessage) => {
+    const profile = new Profile(mockedProfile);
+
+    await validateModelAndExpect(profile, (errorMessage) => {
       expect(errorMessage).toBeFalsy();
     });
   });
 
   it('does not validate a profile without a required parameter', async () => {
     mockedProfile.status = undefined;
-    await validateAndExpect((errorMessage) => {
+    const profile = new Profile(mockedProfile);
+
+    await validateModelAndExpect(profile, (errorMessage) => {
       expect(errorMessage).toBe(
         'profile validation failed: status: status is required'
       );
