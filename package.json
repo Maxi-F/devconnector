@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "start": "node server",
-    "server": "nodemon server"
+    "server": "nodemon server",
+    "test": "jest"
   },
   "author": "Maxi Feldman",
   "license": "MIT",
@@ -20,7 +21,9 @@
     "mongoose": "^5.9.6"
   },
   "devDependencies": {
+    "@shelf/jest-mongodb": "^1.1.5",
     "concurrently": "^5.1.0",
+    "jest": "^25.4.0",
     "nodemon": "^2.0.2"
   }
 }

@@ -47,7 +47,7 @@ const logInUser = async (user) => {
 
   const isAMatch = await bcrypt.compare(user.password, userInDB.password);
 
-  if (!userInDB || !isAMatch) return errorsObject('Invalid Credentials');
+  if (!isAMatch) return errorsObject('Invalid Credentials');
 
   return userInDB;
 };
