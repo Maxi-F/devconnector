@@ -3,7 +3,7 @@ const router = express.Router();
 const jwt = require('jsonwebtoken');
 const { tryOrServerError } = require('../../logic/logic');
 
-const { logInUser } = require('../../controllers/user');
+const { logInUser, findUser } = require('../../controllers/user');
 const authUser = require('../../middleware/auth');
 const User = require('../../models/User');
 
@@ -12,7 +12,7 @@ const User = require('../../models/User');
 // @access  Public
 router.get('/', [authUser], (req, res) => {
   tryOrServerError(res, async () => {
-    const user = await User.findById(req.user.id).select('-password');
+    const user = await findUser(req.user.id);
     res.json(user);
   });
 });

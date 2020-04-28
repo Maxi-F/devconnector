@@ -4,6 +4,10 @@ const bcrypt = require('bcryptjs');
 
 const User = require('../models/User');
 
+const findUser = async (userID) => {
+  return await User.findById(userID).select('-password');
+};
+
 const registerUser = async (userObject) => {
   // See if the user exists
   let user = await User.findOne({ email: userObject.email });
@@ -52,4 +56,4 @@ const logInUser = async (user) => {
   return userInDB;
 };
 
-module.exports = { registerUser, logInUser };
+module.exports = { registerUser, logInUser, findUser };

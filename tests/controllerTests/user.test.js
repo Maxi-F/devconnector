@@ -1,4 +1,4 @@
-const { registerUser, logInUser } = require('../../controllers/user');
+const { registerUser, logInUser, findUser } = require('../../controllers/user');
 const mongoose = require('mongoose');
 const User = require('../../models/User');
 const { setupDB } = require('../setupDB');
@@ -61,5 +61,12 @@ describe('User Controllers', () => {
     const userInDB = await logInUser(badCredentials);
 
     expect(userInDB.errors[0].msg).toBe('Invalid Credentials');
+  });
+
+  it('finds an existing user', async () => {
+    let savedUser = await registerUser(mockedUser);
+    let foundSavedUser = await findUser(savedUser._id);
+
+    expect(savedUser.email).toBe(foundSavedUser.email);
   });
 });
